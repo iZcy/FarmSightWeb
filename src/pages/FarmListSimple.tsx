@@ -49,17 +49,13 @@ export const FarmListSimple: React.FC = () => {
 
         {farms.length === 0 ? (
           <EmptyState
-            icon={<MapPin className="w-12 h-12" />}
+            icon={MapPin}
             title="No farms yet"
             description="Get started by adding your first farm to begin monitoring crop health"
-            action={
-              <Link to="/farms/new">
-                <Button>
-                  <Plus className="w-5 h-5 mr-2" />
-                  Add Your First Farm
-                </Button>
-              </Link>
-            }
+            action={{
+              label: "Add Your First Farm",
+              onClick: () => window.location.href = '/farms/new'
+            }}
           />
         ) : (
           <>

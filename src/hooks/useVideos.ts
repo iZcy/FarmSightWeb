@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from 'react';
-import { getVideos, searchVideos, getVideosByCategory, getVideoCategories, incrementVideoViews } from '../services/videos';
+import { getVideos, getVideoCategories, incrementVideoViews } from '../services/videos';
 import type { Video } from '../types';
 
 export function useVideos(searchQuery?: string, categoryFilter?: string) {

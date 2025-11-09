@@ -26,7 +26,7 @@ export function getVideos(): Video[] {
       views: row[6] as number,
       uploadDate: new Date(row[7] as string),
       url: row[8] as string,
-      relevantFor: row[9] ? (row[9] as string).split(',') : undefined,
+      relevantFor: row[9] ? (row[9] as string).split(',') as any : undefined,
     }));
   } catch (error) {
     console.error('Get videos error:', error);
@@ -66,7 +66,7 @@ export function searchVideos(query: string): Video[] {
       views: row[6] as number,
       uploadDate: new Date(row[7] as string),
       url: row[8] as string,
-      relevantFor: row[9] ? (row[9] as string).split(',') : undefined,
+      relevantFor: row[9] ? (row[9] as string).split(',') as any : undefined,
     }));
   } catch (error) {
     console.error('Search videos error:', error);
@@ -105,7 +105,7 @@ export function getVideosByCategory(category: string): Video[] {
       views: row[6] as number,
       uploadDate: new Date(row[7] as string),
       url: row[8] as string,
-      relevantFor: row[9] ? (row[9] as string).split(',') : undefined,
+      relevantFor: row[9] ? (row[9] as string).split(',') as any : undefined,
     }));
   } catch (error) {
     console.error('Get videos by category error:', error);
@@ -141,7 +141,7 @@ export function getRelevantVideos(stressType: string): Video[] {
       views: row[6] as number,
       uploadDate: new Date(row[7] as string),
       url: row[8] as string,
-      relevantFor: row[9] ? (row[9] as string).split(',') : undefined,
+      relevantFor: row[9] ? (row[9] as string).split(',') as any : undefined,
     }));
   } catch (error) {
     console.error('Get relevant videos error:', error);
