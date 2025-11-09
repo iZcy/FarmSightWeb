@@ -1,0 +1,37 @@
+FARMSIGHT PROJECT FORM COMPLETION
+=====================================
+
+Project Name:
+FarmSight
+
+Team Name:
+GilTech
+
+Contacts:
+[Your contact information]
+
+Technical Field:
+AI, Machine Learning, Satellite Imagery, Agriculture Technology, Remote Sensing, NDVI Analysis, Cloud Computing
+
+Technologies:
+- Mobile: Flutter, Provider, Google Maps, FL Chart
+- Web: React, Vite.js, Tailwind CSS, React Router
+- Backend: Node.js, Express.js, JWT authentication
+- Cloud: Huawei Cloud (ModelArts, OBS, GaussDB, FunctionGraph)
+- External APIs: Google Earth Engine, YouTube Data API
+- AI/ML: NDVI calculation, crop stress detection, predictive analytics
+
+Keywords:
+AI, Machine Learning, Satellite Imagery, Crop Monitoring, NDVI, Agriculture, Early Detection, Predictive Analytics, Huawei Cloud, Real-time Monitoring
+
+Applicable Fields:
+Agriculture, Remote Sensing, Environmental Monitoring, Food Security, Precision Farming, Climate Adaptation, Sustainable Agriculture
+
+Description (200 words):
+FarmSight is an AI-powered platform that revolutionizes crop health monitoring by detecting early stress signals up to 7 days before visible symptoms appear. Using satellite imagery and NDVI (Normalized Difference Vegetation Index) analysis, the platform identifies drought, pest infestations, and nutrient deficiencies in real-time.
+
+The solution combines Google Earth Engine satellite data with Huawei Cloud AI services (ModelArts, OBS, GaussDB, FunctionGraph) to provide farmers with actionable insights through intuitive mobile and web interfaces. Key innovations include predictive analytics with 7-30 day stress forecasting, multi-channel smart alerts, and personalized educational content recommendations.
+
+The platform features a cross-platform Flutter mobile app with interactive dashboards, a React-based web portal for farm management, and a robust Node.js backend with RESTful APIs. Farmers can monitor multiple farms simultaneously, receive real-time weather information, and access curated educational videos tailored to their specific crop stress challenges.
+
+By enabling proactive intervention before crop damage becomes irreversible, FarmSight helps farmers optimize yields, reduce losses, and implement sustainable farming practices. The platform bridges the technology gap in agriculture, making advanced AI-driven crop monitoring accessible and user-friendly for farmers worldwide.
