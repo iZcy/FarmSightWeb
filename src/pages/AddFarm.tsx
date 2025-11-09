@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, MapPin, Save } from 'lucide-react';
+import { ArrowLeft, MapPin, Save, Trash2, Navigation } from 'lucide-react';
 import { useFarms } from '../hooks/useFarms';
 import { useToast } from '../hooks/useToast';
 import { Navbar } from '../components/layout';
@@ -13,38 +13,80 @@ import {
   Button,
   Toast,
 } from '../components/common';
+import { BoundaryDrawMap } from '../components/maps';
+import { reverseGeocode, getCurrentLocation } from '../utils/geocoding';
 
 export const AddFarm: React.FC = () => {
   const navigate = useNavigate();
   const { addFarm } = useFarms();
   const { toasts, success, error, removeToast } = useToast();
+  const [centerLocation, setCenterLocation] = useState<{ lat: number; lng: number } | null>(null);
+  const [boundary, setBoundary] = useState<Array<{ lat: number; lng: number }>>([]);
+  const [isLoadingLocation, setIsLoadingLocation] = useState(false);
+  const [isLoadingAddress, setIsLoadingAddress] = useState(false);
   const [formData, setFormData] = useState({
     name: '',
     address: '',
-    lat: '',
-    lng: '',
     area: '',
     cropType: '',
   });
 
+  // Load user's current location on mount
+  useEffect(() => {
+    const loadCurrentLocation = async () => {
+      setIsLoadingLocation(true);
+      const location = await getCurrentLocation();
+      if (!location.error) {
+        setCenterLocation({ lat: location.lat, lng: location.lng });
+      }
+      setIsLoadingLocation(false);
+    };
+
+    loadCurrentLocation();
+  }, []);
+
+  // Auto-fill address when boundary is drawn
+  useEffect(() => {
+    const fetchAddress = async () => {
+      if (boundary.length > 0 && !formData.address) {
+        setIsLoadingAddress(true);
+        // Calculate center of boundary polygon
+        const centerLat = boundary.reduce((sum, p) => sum + p.lat, 0) / boundary.length;
+        const centerLng = boundary.reduce((sum, p) => sum + p.lng, 0) / boundary.length;
+
+        const result = await reverseGeocode(centerLat, centerLng);
+        if (result.address) {
+          setFormData((prev) => ({ ...prev, address: result.address }));
+        }
+        setIsLoadingAddress(false);
+      }
+    };
+
+    fetchAddress();
+  }, [boundary]);
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (boundary.length < 3) {
+      error('Please draw a farm boundary with at least 3 points');
+      return;
+    }
+
+    // Calculate center point
+    const centerLat = boundary.reduce((sum, p) => sum + p.lat, 0) / boundary.length;
+    const centerLng = boundary.reduce((sum, p) => sum + p.lng, 0) / boundary.length;
 
     const result = addFarm({
       name: formData.name,
       location: {
-        lat: parseFloat(formData.lat),
-        lng: parseFloat(formData.lng),
+        lat: centerLat,
+        lng: centerLng,
         address: formData.address,
       },
       area: parseFloat(formData.area),
       cropType: formData.cropType,
-      boundary: [
-        { lat: parseFloat(formData.lat), lng: parseFloat(formData.lng) },
-        { lat: parseFloat(formData.lat) + 0.002, lng: parseFloat(formData.lng) + 0.002 },
-        { lat: parseFloat(formData.lat) + 0.002, lng: parseFloat(formData.lng) - 0.002 },
-        { lat: parseFloat(formData.lat) - 0.002, lng: parseFloat(formData.lng) + 0.002 },
-      ],
+      boundary: boundary,
     });
 
     if (result.success) {
@@ -62,11 +104,27 @@ export const AddFarm: React.FC = () => {
     });
   };
 
+  const handleClearBoundary = () => {
+    setBoundary([]);
+  };
+
+  const handleUseMyLocation = async () => {
+    setIsLoadingLocation(true);
+    const location = await getCurrentLocation();
+    if (location.error) {
+      error(location.error);
+    } else {
+      setCenterLocation({ lat: location.lat, lng: location.lng });
+      success('Location updated!');
+    }
+    setIsLoadingLocation(false);
+  };
+
   return (
     <div className="min-h-screen bg-gray-50">
       <Navbar />
 
-      <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header */}
         <div className="mb-8">
           <button
@@ -77,7 +135,7 @@ export const AddFarm: React.FC = () => {
             Back to Farms
           </button>
           <h1 className="text-3xl font-bold text-gray-900 mb-2">Add New Farm</h1>
-          <p className="text-gray-600">Enter your farm details to start monitoring</p>
+          <p className="text-gray-600">Draw your farm boundary and enter details</p>
         </div>
 
         <Card>
@@ -95,7 +153,7 @@ export const AddFarm: React.FC = () => {
                 name="name"
                 value={formData.name}
                 onChange={handleChange}
-                placeholder="e.g., Sawah Indramayu"
+                placeholder="e.g., Northeast Rice Base"
                 required
               />
 
@@ -111,16 +169,16 @@ export const AddFarm: React.FC = () => {
                   className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
                   required
                 >
-                  <option value="">Select Crop Type / 选择作物类型</option>
-                  <option value="水稻 (Rice)">水稻 (Rice)</option>
-                  <option value="小麦 (Wheat)">小麦 (Wheat)</option>
-                  <option value="玉米 (Corn)">玉米 (Corn)</option>
-                  <option value="棉花 (Cotton)">棉花 (Cotton)</option>
-                  <option value="大豆 (Soybean)">大豆 (Soybean)</option>
-                  <option value="花生 (Peanut)">花生 (Peanut)</option>
-                  <option value="甘蔗 (Sugarcane)">甘蔗 (Sugarcane)</option>
-                  <option value="茶叶 (Tea)">茶叶 (Tea)</option>
-                  <option value="蔬菜 (Vegetables)">蔬菜 (Vegetables)</option>
+                  <option value="">Select Crop Type</option>
+                  <option value="Rice">Rice</option>
+                  <option value="Wheat">Wheat</option>
+                  <option value="Corn">Corn</option>
+                  <option value="Cotton">Cotton</option>
+                  <option value="Soybean">Soybean</option>
+                  <option value="Peanut">Peanut</option>
+                  <option value="Sugarcane">Sugarcane</option>
+                  <option value="Tea">Tea</option>
+                  <option value="Vegetables">Vegetables</option>
                 </select>
               </div>
 
@@ -136,44 +194,71 @@ export const AddFarm: React.FC = () => {
                 required
               />
 
-              {/* Address */}
-              <Input
-                label="Address / 地址"
-                name="address"
-                value={formData.address}
-                onChange={handleChange}
-                placeholder="e.g., 河南省郑州市中牟县, Henan Province, China"
-                required
-              />
+              {/* Boundary Drawing Map */}
+              <div>
+                <div className="flex items-center justify-between mb-2">
+                  <label className="block text-sm font-medium text-gray-700">
+                    Farm Boundary <span className="text-red-500">*</span>
+                  </label>
+                  <div className="flex gap-2">
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      onClick={handleUseMyLocation}
+                      disabled={isLoadingLocation}
+                    >
+                      <Navigation className="w-4 h-4 mr-2" />
+                      {isLoadingLocation ? 'Loading...' : 'Use My Location'}
+                    </Button>
+                    {boundary.length > 0 && (
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="sm"
+                        onClick={handleClearBoundary}
+                      >
+                        <Trash2 className="w-4 h-4 mr-2" />
+                        Clear
+                      </Button>
+                    )}
+                  </div>
+                </div>
 
-              {/* Location Coordinates */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <Input
-                  label="Latitude / 纬度"
-                  name="lat"
-                  type="number"
-                  step="any"
-                  value={formData.lat}
-                  onChange={handleChange}
-                  placeholder="e.g., 34.7466"
-                  required
+                <BoundaryDrawMap
+                  centerLocation={centerLocation}
+                  boundary={boundary}
+                  onBoundaryChange={setBoundary}
+                  height="500px"
                 />
-                <Input
-                  label="Longitude / 经度"
-                  name="lng"
-                  type="number"
-                  step="any"
-                  value={formData.lng}
-                  onChange={handleChange}
-                  placeholder="e.g., 113.6253"
-                  required
-                />
+
+                {boundary.length > 0 && (
+                  <div className="mt-2 p-3 bg-green-50 border border-green-200 rounded-lg">
+                    <p className="text-sm text-green-800">
+                      <strong>{boundary.length} points</strong> added to boundary
+                      {boundary.length >= 3 && ' - Polygon completed!'}
+                    </p>
+                  </div>
+                )}
+
+                <p className="text-sm text-gray-500 mt-2">
+                  Click on the map to add boundary points. Need at least 3 points to form a polygon.
+                </p>
               </div>
 
-              <div className="bg-primary-50 border border-primary-200 rounded-lg p-4">
-                <p className="text-sm text-primary-800">
-                  <strong>Tip:</strong> You can find coordinates using Google Maps. Right-click on your farm location and select "What's here?" to get the latitude and longitude.
-                </p>
+              {/* Address */}
+              <div>
+                <Input
+                  label="Address (optional)"
+                  name="address"
+                  value={formData.address}
+                  onChange={handleChange}
+                  placeholder="Address will be auto-filled..."
+                  disabled={isLoadingAddress}
+                />
+                {isLoadingAddress && (
+                  <p className="text-xs text-gray-500 mt-1">Fetching address...</p>
+                )}
               </div>
 
               {/* Buttons */}
@@ -185,7 +270,7 @@ export const AddFarm: React.FC = () => {
                 >
                   Cancel
                 </Button>
-                <Button type="submit">
+                <Button type="submit" disabled={boundary.length < 3}>
                   <Save className="w-5 h-5 mr-2" />
                   Add Farm
                 </Button>
@@ -196,12 +281,14 @@ export const AddFarm: React.FC = () => {
 
         {/* Help Section */}
         <div className="mt-6 bg-white rounded-lg border border-gray-200 p-6">
-          <h3 className="font-semibold text-gray-900 mb-3">Need Help?</h3>
+          <h3 className="font-semibold text-gray-900 mb-3">How to Draw Your Farm Boundary</h3>
           <ul className="space-y-2 text-sm text-gray-600">
-            <li>• Make sure to enter accurate coordinates for precise monitoring</li>
-            <li>• Farm area should be in hectares (1 hectare = 10,000 m²)</li>
-            <li>• You can edit farm details later from the farm details page</li>
-            <li>• NDVI monitoring will start automatically after adding the farm</li>
+            <li>• Click "Use My Location" to center the map on your current position</li>
+            <li>• Zoom and pan the map to find your farm location</li>
+            <li>• Click on the map to add points around your farm's perimeter</li>
+            <li>• Add at least 3 points to create a valid boundary</li>
+            <li>• The address will be automatically filled from the location</li>
+            <li>• Click "Clear" to start over if you make a mistake</li>
           </ul>
         </div>
       </div>

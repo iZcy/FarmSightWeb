@@ -10,10 +10,10 @@ import type {
   NDVIData
 } from '../types';
 
-// Mock User - Chinese Farmer
+// Mock User
 export const mockUser: User = {
   id: '1',
-  name: '李明 (Li Ming)',
+  name: 'Li Ming',
   email: 'liming@farmsight.cn',
   phone: '+86 138-0013-8000',
   avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=LiMing',
@@ -25,14 +25,15 @@ export const mockUser: User = {
 export const mockFarms: Farm[] = [
   {
     id: 'farm-1',
-    name: '东北水稻基地 (Northeast Rice Base)',
+    userId: '1',
+    name: 'Northeast Rice Base',
     location: {
       lat: 45.7565,
       lng: 126.6426,
       address: '黑龙江省哈尔滨市五常市, Heilongjiang Province, China',
     },
     area: 125.5,
-    cropType: '水稻 (Rice)',
+    cropType: 'Rice',
     boundary: [
       { lat: 45.7565, lng: 126.6426 },
       { lat: 45.7585, lng: 126.6446 },
@@ -44,14 +45,15 @@ export const mockFarms: Farm[] = [
   },
   {
     id: 'farm-2',
-    name: '河南小麦农场 (Henan Wheat Farm)',
+    userId: '1',
+    name: 'Henan Wheat Farm',
     location: {
       lat: 34.7466,
       lng: 113.6253,
       address: '河南省郑州市中牟县, Henan Province, China',
     },
     area: 88.3,
-    cropType: '小麦 (Wheat)',
+    cropType: 'Wheat',
     boundary: [
       { lat: 34.7466, lng: 113.6253 },
       { lat: 34.7486, lng: 113.6273 },
@@ -63,14 +65,15 @@ export const mockFarms: Farm[] = [
   },
   {
     id: 'farm-3',
-    name: '新疆棉花种植区 (Xinjiang Cotton Plantation)',
+    userId: '1',
+    name: 'Xinjiang Cotton Plantation',
     location: {
       lat: 44.3061,
       lng: 86.0571,
       address: '新疆维吾尔自治区乌鲁木齐市, Xinjiang Uyghur Autonomous Region, China',
     },
     area: 156.8,
-    cropType: '棉花 (Cotton)',
+    cropType: 'Cotton',
     boundary: [
       { lat: 44.3061, lng: 86.0571 },
       { lat: 44.3081, lng: 86.0591 },
@@ -133,7 +136,7 @@ const generateForecast = (lastValue: number, days: number): NDVIData[] => {
   return data;
 };
 
-// Mock Alerts - Chinese Context
+// Mock Alerts
 export const mockAlerts: StressAlert[] = [
   {
     id: 'alert-1',
@@ -142,8 +145,8 @@ export const mockAlerts: StressAlert[] = [
     severity: 'high',
     confidence: 87,
     detectedAt: new Date(Date.now() - 2 * 60 * 60 * 1000), // 2 hours ago
-    message: '东北水稻基地检测到干旱压力 (Drought stress detected in Northeast Rice Base)',
-    recommendation: '增加灌溉频率，建议在早晨进行深层浇水。(Increase irrigation frequency. Deep watering recommended in morning hours.)',
+    message: 'Drought stress detected in Northeast Rice Base',
+    recommendation: 'Increase irrigation frequency. Deep watering recommended in morning hours.',
     isRead: false,
   },
   {
@@ -153,8 +156,8 @@ export const mockAlerts: StressAlert[] = [
     severity: 'medium',
     confidence: 72,
     detectedAt: new Date(Date.now() - 24 * 60 * 60 * 1000), // 1 day ago
-    message: '河南小麦农场检测到营养缺乏 (Nutrient deficiency detected in Henan Wheat Farm)',
-    recommendation: '施用富氮肥料（尿素/NPK复合肥）。检测土壤pH值。(Apply nitrogen-rich fertilizer. Test soil pH levels.)',
+    message: 'Nutrient deficiency detected in Henan Wheat Farm',
+    recommendation: 'Apply nitrogen-rich fertilizer (Urea/NPK). Test soil pH levels.',
     isRead: false,
   },
   {
@@ -164,8 +167,8 @@ export const mockAlerts: StressAlert[] = [
     severity: 'critical',
     confidence: 92,
     detectedAt: new Date(Date.now() - 6 * 60 * 60 * 1000), // 6 hours ago
-    message: '东北水稻基地检测到虫害 (Pest infestation detected in Northeast Rice Base)',
-    recommendation: '需要立即采取行动。建议使用有机农药。(Immediate action required. Consider organic pesticide application.)',
+    message: 'Pest infestation detected in Northeast Rice Base',
+    recommendation: 'Immediate action required. Consider organic pesticide application.',
     isRead: true,
   },
   {
@@ -175,8 +178,8 @@ export const mockAlerts: StressAlert[] = [
     severity: 'low',
     confidence: 95,
     detectedAt: new Date(Date.now() - 12 * 60 * 60 * 1000), // 12 hours ago
-    message: '新疆棉花种植区显示健康生长 (Xinjiang Cotton Plantation showing healthy growth)',
-    recommendation: '继续当前的灌溉和施肥计划。(Continue current irrigation and fertilization schedule.)',
+    message: 'Xinjiang Cotton Plantation showing healthy growth',
+    recommendation: 'Continue current irrigation and fertilization schedule.',
     isRead: true,
   },
 ];

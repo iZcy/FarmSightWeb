@@ -94,11 +94,11 @@ export const Login: React.FC = () => {
             <form onSubmit={handleSubmit} className="space-y-4">
               {!isLoginMode && (
                 <Input
-                  label="Full Name / 姓名"
+                  label="Full Name"
                   name="name"
                   value={formData.name}
                   onChange={handleChange}
-                  placeholder="e.g., 李明 (Li Ming)"
+                  placeholder="e.g., Li Ming"
                   required
                 />
               )}
@@ -114,7 +114,7 @@ export const Login: React.FC = () => {
               />
 
               <Input
-                label="Password / 密码"
+                label="Password"
                 name="password"
                 type="password"
                 value={formData.password}
@@ -125,7 +125,7 @@ export const Login: React.FC = () => {
 
               {!isLoginMode && (
                 <Input
-                  label="Phone / 电话 (Optional)"
+                  label="Phone (Optional)"
                   name="phone"
                   type="tel"
                   value={formData.phone}
