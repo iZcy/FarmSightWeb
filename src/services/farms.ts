@@ -4,7 +4,7 @@ import type { Farm, FarmHealth, StressAlert, NDVIData } from '../types';
 // Create farm
 export function createFarm(
   userId: string,
-  farm: Omit<Farm, 'id' | 'createdAt' | 'lastUpdated'>
+  farm: Omit<Farm, 'id' | 'userId' | 'createdAt' | 'lastUpdated'>
 ): { success: boolean; error?: string; farm?: Farm } {
   try {
     const db = getDatabase();
@@ -34,6 +34,7 @@ export function createFarm(
 
     const newFarm: Farm = {
       id: farmId,
+      userId,
       ...farm,
       createdAt: new Date(now),
       lastUpdated: new Date(now),
@@ -52,7 +53,7 @@ export function getFarms(userId: string): Farm[] {
     const db = getDatabase();
 
     const result = db.exec(
-      `SELECT id, name, location_lat, location_lng, location_address, area, crop_type, boundary, created_at, last_updated
+      `SELECT id, user_id, name, location_lat, location_lng, location_address, area, crop_type, boundary, created_at, last_updated
        FROM farms
        WHERE user_id = ?
        ORDER BY created_at DESC`,
@@ -65,17 +66,18 @@ export function getFarms(userId: string): Farm[] {
 
     return result[0].values.map((row): Farm => ({
       id: row[0] as string,
-      name: row[1] as string,
+      userId: row[1] as string,
+      name: row[2] as string,
       location: {
-        lat: row[2] as number,
-        lng: row[3] as number,
-        address: row[4] as string,
+        lat: row[3] as number,
+        lng: row[4] as number,
+        address: row[5] as string,
       },
-      area: row[5] as number,
-      cropType: row[6] as string,
-      boundary: JSON.parse(row[7] as string),
-      createdAt: new Date(row[8] as string),
-      lastUpdated: new Date(row[9] as string),
+      area: row[6] as number,
+      cropType: row[7] as string,
+      boundary: JSON.parse(row[8] as string),
+      createdAt: new Date(row[9] as string),
+      lastUpdated: new Date(row[10] as string),
     }));
   } catch (error) {
     console.error('Get farms error:', error);
@@ -89,7 +91,7 @@ export function getFarmById(farmId: string): Farm | null {
     const db = getDatabase();
 
     const result = db.exec(
-      `SELECT id, name, location_lat, location_lng, location_address, area, crop_type, boundary, created_at, last_updated
+      `SELECT id, user_id, name, location_lat, location_lng, location_address, area, crop_type, boundary, created_at, last_updated
        FROM farms
        WHERE id = ?`,
       [farmId]
@@ -102,17 +104,18 @@ export function getFarmById(farmId: string): Farm | null {
     const row = result[0].values[0];
     return {
       id: row[0] as string,
-      name: row[1] as string,
+      userId: row[1] as string,
+      name: row[2] as string,
       location: {
-        lat: row[2] as number,
-        lng: row[3] as number,
-        address: row[4] as string,
+        lat: row[3] as number,
+        lng: row[4] as number,
+        address: row[5] as string,
       },
-      area: row[5] as number,
-      cropType: row[6] as string,
-      boundary: JSON.parse(row[7] as string),
-      createdAt: new Date(row[8] as string),
-      lastUpdated: new Date(row[9] as string),
+      area: row[6] as number,
+      cropType: row[7] as string,
+      boundary: JSON.parse(row[8] as string),
+      createdAt: new Date(row[9] as string),
+      lastUpdated: new Date(row[10] as string),
     };
   } catch (error) {
     console.error('Get farm error:', error);

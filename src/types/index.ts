@@ -10,6 +10,7 @@ export interface User {
 
 export interface Farm {
   id: string;
+  userId: string;
   name: string;
   location: {
     lat: number;

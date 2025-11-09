@@ -9,25 +9,21 @@ import type {
   UserSettings,
 } from '../types';
 import {
-  mockUser,
-  mockFarms,
-  mockAlerts,
-  mockFarmHealth,
   mockVideos,
   mockUserSettings,
 } from '../mock/data';
 
 // User state - persisted in localStorage
-export const userAtom = atomWithStorage<User | null>('farmsight-user', mockUser);
+export const userAtom = atomWithStorage<User | null>('farmsight-user', null);
 
 // Authentication state
-export const isAuthenticatedAtom = atomWithStorage<boolean>('farmsight-auth', true);
+export const isAuthenticatedAtom = atomWithStorage<boolean>('farmsight-auth', false);
 
 // Farms state - persisted in localStorage
-export const farmsAtom = atomWithStorage<Farm[]>('farmsight-farms', mockFarms);
+export const farmsAtom = atomWithStorage<Farm[]>('farmsight-farms', []);
 
 // Selected farm ID
-export const selectedFarmIdAtom = atom<string | null>(mockFarms[0]?.id || null);
+export const selectedFarmIdAtom = atom<string | null>(null);
 
 // Derived atom for selected farm
 export const selectedFarmAtom = atom(
@@ -39,7 +35,7 @@ export const selectedFarmAtom = atom(
 );
 
 // Farm health data
-export const farmHealthAtom = atom<FarmHealth[]>(mockFarmHealth);
+export const farmHealthAtom = atom<FarmHealth[]>([]);
 
 // Derived atom for selected farm health
 export const selectedFarmHealthAtom = atom(
@@ -51,7 +47,7 @@ export const selectedFarmHealthAtom = atom(
 );
 
 // Alerts state - persisted in localStorage
-export const alertsAtom = atomWithStorage<StressAlert[]>('farmsight-alerts', mockAlerts);
+export const alertsAtom = atomWithStorage<StressAlert[]>('farmsight-alerts', []);
 
 // Unread alerts count
 export const unreadAlertsCountAtom = atom(

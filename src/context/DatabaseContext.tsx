@@ -62,6 +62,12 @@ export const DatabaseProvider: React.FC<{ children: React.ReactNode }> = ({ chil
   }, []);
 
   const login = async (email: string, password: string): Promise<{ success: boolean; error?: string }> => {
+    // Clear any existing user data from localStorage before logging in
+    localStorage.removeItem('farmsight-user');
+    localStorage.removeItem('farmsight-farms');
+    localStorage.removeItem('farmsight-alerts');
+    localStorage.removeItem('farmsight-settings');
+
     const result = authLogin(email, password);
     if (result.success && result.user && result.sessionId) {
       setUser(result.user);
@@ -93,6 +99,13 @@ export const DatabaseProvider: React.FC<{ children: React.ReactNode }> = ({ chil
       authLogout(sessionId);
       localStorage.removeItem('farmsight-session');
     }
+
+    // Clear all user-specific data from localStorage
+    localStorage.removeItem('farmsight-user');
+    localStorage.removeItem('farmsight-farms');
+    localStorage.removeItem('farmsight-alerts');
+    localStorage.removeItem('farmsight-settings');
+
     setUser(null);
     setSessionId(null);
     setIsAuthenticated(false);

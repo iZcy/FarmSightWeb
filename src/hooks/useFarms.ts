@@ -32,7 +32,7 @@ export function useFarms() {
     }
   }, [isAuthenticated, user]);
 
-  const addFarm = (farm: Omit<Farm, 'id' | 'createdAt' | 'lastUpdated'>) => {
+  const addFarm = (farm: Omit<Farm, 'id' | 'userId' | 'createdAt' | 'lastUpdated'>) => {
     if (!user) return { success: false, error: 'Not authenticated' };
     const result = createFarmService(user.id, farm);
     if (result.success) {
